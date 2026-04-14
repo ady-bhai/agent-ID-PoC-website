@@ -1,0 +1,20 @@
+---
+title: "Designing the Agent ID proof of concept"
+date: "2026-04-01"
+author: "Aditya Mehta"
+description: "How we turned composite credential ideas into an interactive demo for policymakers — trade-offs, field-level toggles, and incident response as the lens."
+---
+
+We set out to make abstract identity concepts legible to people who will not read a protocol spec. The proof of concept had to show *who* signs *what*, and what a receiving service can still do when a section is missing.
+
+## From credential fields to service questions
+
+Instead of exposing raw JWT-style fields, we grouped claims into the questions a polyclinic or insurer actually asks: who is behind this agent, who deployed it, what is it allowed to do here, is it safe, and if something goes wrong, who answers the phone. Each question maps to independently signed content from developers, providers, deployers, or certifiers.
+
+## Incident response as the stress test
+
+Governance conversations often stop at “authentication.” We used incident response phases as the consequence layer: when identity or safety metadata is absent, specific phases do not degrade gracefully — they stop. That asymmetry is easier to argue for in a regulator-facing demo than yet another architecture diagram.
+
+## What we would do next
+
+Future iterations may tighten narrative copy for non-technical stakeholders and align field names with whichever standardisation process picks up composite credentials. The goal of this build is fast iteration with SASH and ERA Cambridge, not a frozen product.
