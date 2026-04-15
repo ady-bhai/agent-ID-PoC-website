@@ -19,25 +19,6 @@ export default function ContactPage() {
           AI safety research community.
         </span>
       </p>
-      <dl className="mt-10 space-y-6">
-        <div>
-          <dt className="text-sm font-medium uppercase tracking-wide text-slate-500">
-            Aditya Mehta
-          </dt>
-          <dd className="mt-1">
-            <a
-              href="mailto:aditya.mehta@berkeley.edu"
-              className="text-lg font-medium text-[#0f4c5c] underline-offset-2 hover:underline"
-            >
-              aditya.mehta@berkeley.edu
-            </a>
-          </dd>
-        </div>
-      </dl>
-      <p className="mt-10 text-sm text-slate-500">
-        A project-specific inbox may be added later; for now, use the address
-        above.
-      </p>
     </div>
   );
 }
