@@ -1,7 +1,15 @@
 import Image from "next/image";
 
+/** GitHub Pages serves under a repo prefix; `next/image` can omit it in static export. */
+function withPublicBasePath(path: string): string {
+  const raw = process.env.NEXT_PUBLIC_BASE_PATH?.trim() ?? "";
+  const base = raw === "/" ? "" : raw.replace(/\/$/, "");
+  if (!path.startsWith("/") || !base) return path;
+  return `${base}${path}`;
+}
+
 type HomeFigureProps = {
-  /** Path under `/public`, e.g. `/images/home/scenario-questions.png` */
+  /** Path under `/public`, e.g. `/images/figures/market-incentive-gap.png` */
   src: string;
   alt: string;
   caption?: string;
@@ -27,11 +35,12 @@ export function HomeFigure({
   width = DEFAULT_WIDTH,
   height = DEFAULT_HEIGHT,
 }: HomeFigureProps) {
+  const resolvedSrc = withPublicBasePath(src);
   return (
     <figure className={className}>
       <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-sm">
         <Image
-          src={src}
+          src={resolvedSrc}
           alt={alt}
           width={width}
           height={height}
