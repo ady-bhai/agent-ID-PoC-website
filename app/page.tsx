@@ -1,158 +1,141 @@
 import Link from "next/link";
-import { BlogCard } from "@/components/BlogCard";
-import { HomeFigure } from "@/components/HomeFigure";
-import { getLatestPosts } from "@/lib/blog";
+import { AgentIdPoc } from "@/components/poc/AgentIdPoc";
 import { siteConfig } from "@/lib/site";
 
-const questionItems = [
+/** Matches `Nav` (`max-w-4xl` + `px-4 sm:px-6`) so hero, copy, and PoC share one left edge. */
+const homeContent =
+  "relative mx-auto w-full max-w-4xl px-4 sm:px-6" as const;
+
+const heroNoiseStyle = {
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+} as const;
+
+const processSteps = [
   {
-    dotClass: "bg-[#2563eb]",
-    text: "How safe is this model?",
+    step: "01",
+    title: "MedBot SG agent",
+    subtitle: "Example consumer-facing agent",
+    body: "An agent can book appointments and act on a user’s behalf—but the service only sees another client at the door.",
   },
   {
-    dotClass: "bg-[#16a34a]",
-    text: "Who do we contact if it fails?",
+    step: "02",
+    title: "Raffles Medical deployment",
+    subtitle: "Organization-scoped rollout",
+    body: "The same stack may be deployed under a hospital brand, procurement policy, and escalation path—separate from who trained the base model.",
   },
   {
-    dotClass: "bg-[#ea580c]",
-    text: "Where did this model come from?",
+    step: "03",
+    title: "Polyclinic appointment API",
+    subtitle: "The service’s view",
+    body: "When traffic arrives, the API must judge accountability without a shared verifiable credential. Open questions include:",
+    bullets: [
+      { dotClass: "bg-[#2563eb]", text: "Who trained the model? (Developer)" },
+      { dotClass: "bg-[#16a34a]", text: "Who built the agent? (Provider)" },
+      { dotClass: "bg-[#ea580c]", text: "Who authorized deployment? (Deployer)" },
+    ],
   },
 ] as const;
 
 export default function HomePage() {
-  const posts = getLatestPosts(3);
-
   return (
     <div>
-      <section className="relative overflow-hidden border-b border-slate-200/80">
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#161616]">
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_50%_at_50%_-20%,rgba(26,39,68,0.14),transparent)]"
+          className="pointer-events-none absolute inset-0 opacity-[0.14] mix-blend-overlay"
+          style={heroNoiseStyle}
           aria-hidden
         />
-        <div className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-20">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0f4c5c]">
-            Policy research
-          </p>
-          <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-[#1a2744] sm:text-4xl">
+
+        <div
+          className={`${homeContent} flex flex-col items-center py-20 text-center sm:py-28`}
+        >
+          <h1 className="text-4xl font-normal tracking-tight text-white sm:text-5xl md:text-6xl">
             {siteConfig.title}
           </h1>
-          <div className="mt-8 max-w-2xl text-base leading-relaxed text-slate-700">
-            <p>
-              AI agents are entering the economy. They now book appointments
-              and make transactions on our behalf. However, services receiving
-              these requests have no way to verify their credibility.
-            </p>
-          </div>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-zinc-400 sm:text-lg">
+            {siteConfig.tagline}
+          </p>
+          <Link
+            href="/demo"
+            className="mt-10 inline-flex rounded-full bg-zinc-100 px-7 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-white"
+          >
+            Interactive demo
+          </Link>
+        </div>
 
-          <div className="mt-14 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-[#1a2744]">
-                Unresolved questions
-              </h2>
-              <ul className="mt-4 space-y-3 text-base leading-relaxed text-slate-800">
-                {questionItems.map((item) => (
-                  <li key={item.text} className="flex gap-3">
+        <div className="border-t border-white/10">
+          <div className={`${homeContent} pb-20 pt-14 sm:pb-24 sm:pt-16`}>
+            <h2 className="sr-only">How a request reads to a service</h2>
+            <p className="mx-auto max-w-2xl text-center text-base leading-relaxed text-zinc-300 sm:text-lg">
+              AI agents are entering the economy: booking and transacting on our
+              behalf. However, services receiving these requests have{" "}
+              <em className="italic text-zinc-100">no way to verify their credibility</em>
+              .
+            </p>
+
+            <ol className="mt-12 grid list-none gap-4 p-0 md:grid-cols-3">
+              {processSteps.map((item) => (
+                <li key={item.step}>
+                  <article className="flex h-full flex-col rounded-2xl border border-white/10 bg-[#1f1f1f] p-6">
                     <span
-                      className={`mt-2 h-2 w-2 shrink-0 rounded-full ${item.dotClass}`}
+                      className="text-4xl font-extralight tabular-nums leading-none text-zinc-500"
                       aria-hidden
-                    />
-                    <span>{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-6 text-base leading-relaxed text-slate-700">
-                The answers lie in safety testing, accountability, and incident
-                response. Those fields have the{" "}
-                <strong className="font-medium text-slate-800">
-                  weakest market incentives
-                </strong>{" "}
-                for voluntary disclosure.
+                    >
+                      {item.step}
+                    </span>
+                    <h3 className="mt-3 text-base font-semibold text-white">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
+                      {item.subtitle}
+                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-zinc-300">
+                      {item.body}
+                    </p>
+                    {"bullets" in item && item.bullets ? (
+                      <ul className="mt-4 space-y-2.5 text-sm leading-snug text-zinc-300">
+                        {item.bullets.map((b) => (
+                          <li key={b.text} className="flex gap-2.5">
+                            <span
+                              className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${b.dotClass}`}
+                              aria-hidden
+                            />
+                            <span>{b.text}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </article>
+                </li>
+              ))}
+            </ol>
+
+            <div className="mx-auto mt-10 max-w-2xl rounded-xl border border-amber-500/35 bg-amber-950/35 px-5 py-4 sm:px-6 sm:py-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-200/90">
+                The failure mode
               </p>
-            </div>
-            <HomeFigure
-              src="/images/home/scenario-questions.png"
-              alt="Healthcare booking flow: an agent requests data from a polyclinic API. A thought bubble lists three verification questions tied to developer, provider, and deployer roles."
-              caption="A concrete scenario: each verification question must be answered by a different supply-chain actor — so no single party can provide the full picture alone."
-              priority
-              className="lg:pt-1"
-            />
-          </div>
-
-          <div className="mt-16 space-y-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#1a2744]">
-              The market incentive gap
-            </h2>
-            <HomeFigure
-              src="/images/home/market-incentive-gap.png"
-              alt="Comparison of what markets readily supply—session IDs and operational metadata—versus what governance needs: deployer identity, model provenance, safety assurances, and incident response contacts."
-              caption="Governance-critical fields are the least likely to be disclosed voluntarily."
-            />
-          </div>
-
-          <div className="mt-16 space-y-6">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#1a2744]">
-              Composite Agent ID
-            </h2>
-            <HomeFigure
-              src="/images/home/composite-credential-flow.png"
-              alt="Flow from developer, provider, and deployer contributions into a single Agent ID credential presented to a service, which may deny access, request more information, or grant access."
-            />
-            <p className="max-w-2xl text-base leading-relaxed text-slate-700">
-              Our proof of concept demonstrates a composite credential where the
-              model developer, the service provider, and the deployer each sign
-              different sections of the Agent ID.
-            </p>
-            <HomeFigure
-              src="/images/home/supply-chain.png"
-              alt="Supply chain from the developer who trains the model, through the provider who builds the agent and the deployer who authorizes use, to the running agent instance."
-              caption="From training to deployment: responsibility is distributed across the chain."
-              className="max-w-4xl"
-            />
-            <div className="pt-2">
-              <Link
-                href="/demo"
-                className="inline-flex items-center justify-center rounded-md bg-[#1a2744] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#243a5c] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a2744] focus-visible:ring-offset-2"
-              >
-                Explore the interactive demo
-              </Link>
-              <p className="mt-3 max-w-xl text-sm text-slate-500">
-                Three views — Ecosystem, Credential, and Consequences — walk
-                through contributions and what breaks when information is
-                missing.
+              <p className="mt-2 text-sm font-medium leading-relaxed text-zinc-100 sm:text-base">
+                Without this information, they face a binary choice: block all
+                agents, or accept unknown risk.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
-        <h2 className="text-lg font-semibold text-[#1a2744]">Latest writing</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Notes on design, governance, and implementation.
-        </p>
-        {posts.length === 0 ? (
-          <p className="mt-6 text-sm text-slate-500">
-            No posts yet — check back soon.
-          </p>
-        ) : (
-          <ul className="mt-8 grid gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-            {posts.map((post) => (
-              <li key={post.slug}>
-                <BlogCard post={post} className="h-full" />
-              </li>
-            ))}
-          </ul>
-        )}
-        {posts.length > 0 ? (
-          <p className="mt-8">
-            <Link
-              href="/blog"
-              className="text-sm font-medium text-[#0f4c5c] underline-offset-2 hover:underline"
-            >
-              View all posts →
-            </Link>
-          </p>
-        ) : null}
+      <section className="border-b border-slate-200/80 bg-slate-50/50">
+        <div className={`${homeContent} pb-10 pt-6 sm:pb-12 sm:pt-8`}>
+          <h2 className="text-lg font-semibold tracking-tight text-[#1a2744]">
+            Interactive proof of concept
+          </h2>
+          <div
+            className="mt-2 h-px max-w-md bg-gradient-to-r from-[#ea580c] via-[#ea580c]/50 to-transparent"
+            aria-hidden
+          />
+          <div className="mt-5">
+            <AgentIdPoc variant="full" />
+          </div>
+        </div>
       </section>
     </div>
   );

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { HomeFigure } from "@/components/HomeFigure";
 import { AgentIdPoc } from "@/components/poc/AgentIdPoc";
 
 export const metadata: Metadata = {
   title: "Interactive demo",
-  description:
-    "Composite agent identity credential — Ecosystem, Credential, and Consequences views.",
+  description: "Composite agent identity credential — interactive exploration.",
 };
 
 export default function DemoPage() {
@@ -14,20 +14,38 @@ export default function DemoPage() {
         <h1 className="text-2xl font-semibold tracking-tight text-[#1a2744]">
           Interactive proof of concept
         </h1>
-        <p className="mt-4 text-base leading-relaxed text-slate-700">
-          This interactive proof of concept demonstrates how a composite agent
-          identity credential enables governance capabilities across the AI
-          supply chain. Use the three views —{" "}
-          <strong className="font-medium text-slate-800">Ecosystem</strong>,{" "}
-          <strong className="font-medium text-slate-800">Credential</strong>, and{" "}
-          <strong className="font-medium text-slate-800">Consequences</strong> —
-          to explore what each actor contributes and what services lose when
-          information is missing.
-        </p>
       </div>
 
       <div className="mt-8">
         <AgentIdPoc />
+      </div>
+
+      <div className="mt-14 max-w-3xl border-t border-slate-200 pt-12">
+        <h2 className="text-lg font-semibold text-[#1a2744]">
+          Standards landscape
+        </h2>
+        <HomeFigure
+          className="mt-6"
+          src="/images/figures/standards-matrix.png"
+          width={1206}
+          height={686}
+          alt="Matrix comparing common standards against service questions such as provider behind the agent, deployer, capabilities, safety evidence, and incident recourse. Composite Agent ID rows show direct answers across columns."
+          caption="Which questions each layer helps answer — no single standard provides a complete answer on its own."
+        />
+      </div>
+
+      <div className="mt-12 max-w-3xl border-t border-slate-200 pt-12">
+        <h2 className="text-lg font-semibold text-[#1a2744]">
+          What&apos;s in the packet
+        </h2>
+        <HomeFigure
+          className="mt-6"
+          src="/images/figures/service-request-card.png"
+          width={1706}
+          height={858}
+          alt="Diagram of a service request card packet: stacked signed blocks for provider identity, model version, incident response endpoint, deployer identity and capabilities, independent safety assurance, and instance-level fields, with brackets noting independent signers and cryptographic binding."
+          caption="How attestations stack and bind so a valid provider signature cannot be reused with an unauthorized deployer."
+        />
       </div>
 
       <div className="mx-auto mt-10 max-w-3xl rounded-lg border border-slate-200 bg-slate-50/80 px-4 py-5 text-sm leading-relaxed text-slate-700 sm:px-5">

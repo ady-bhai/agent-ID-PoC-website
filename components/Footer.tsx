@@ -9,10 +9,9 @@ export function Footer() {
         <p className="text-center text-sm text-slate-600">
           A research project by{" "}
           <span className="font-medium text-slate-800">
-            Singapore AI Safety Hub (SASH) × ERA Cambridge
+            Singapore AI Safety Hub (SASH)
           </span>
-          , contributing to Singapore&apos;s Model AI Governance Framework for
-          Agentic AI.
+          .
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-6">
           <Link

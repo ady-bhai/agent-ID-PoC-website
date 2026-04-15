@@ -1,0 +1,13 @@
+Identified exports (from your Screenshots) are copied into public/images/figures/ with these names:
+
+  market-incentive-gap.png     ← Screenshot … 4.35.55 PM
+  composite-credential-flow.png ← Screenshot … 4.12.44 PM (main flow)
+  supply-chain.png            ← Screenshot … 4.36.20 PM
+  credential-stages.png       ← Screenshot … 4.36.34 PM (Deny / More info / Grant)
+  service-request-card.png    ← Screenshot … 4.36.43 PM
+  standards-matrix.png        ← Screenshot … 4.37.15 PM
+  scenario-sketch.png         ← Screenshot … 4.37.49 PM
+
+Near-duplicate flow export (4.12.51 PM) was not linked on the site; you can delete it from import/ if unused.
+
+To replace any figure: overwrite the matching file in public/images/figures/ (same filename). You can also drop new files in this import/ folder first, then copy into ../figures/ with the name above.
