@@ -10,31 +10,7 @@ const heroNoiseStyle = {
   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
 } as const;
 
-const processSteps = [
-  {
-    step: "01",
-    title: "MedBot SG agent",
-    subtitle: "Example consumer-facing agent",
-    body: "An agent can book appointments and act on a user’s behalf—but the service only sees another client at the door.",
-  },
-  {
-    step: "02",
-    title: "Raffles Medical deployment",
-    subtitle: "Organization-scoped rollout",
-    body: "The same stack may be deployed under a hospital brand, procurement policy, and escalation path—separate from who trained the base model.",
-  },
-  {
-    step: "03",
-    title: "Polyclinic appointment API",
-    subtitle: "The service’s view",
-    body: "When traffic arrives, the API must judge accountability without a shared verifiable credential. Open questions include:",
-    bullets: [
-      { dotClass: "bg-[#2563eb]", text: "Who trained the model? (Developer)" },
-      { dotClass: "bg-[#16a34a]", text: "Who built the agent? (Provider)" },
-      { dotClass: "bg-[#ea580c]", text: "Who authorized deployment? (Deployer)" },
-    ],
-  },
-] as const;
+const scenarioCardPlaceholders = [1, 2, 3] as const;
 
 export default function HomePage() {
   return (
@@ -65,7 +41,7 @@ export default function HomePage() {
 
         <div className="border-t border-white/10">
           <div className={`${homeContent} pb-20 pt-14 sm:pb-24 sm:pt-16`}>
-            <h2 className="sr-only">How a request reads to a service</h2>
+            <h2 className="sr-only">Scenario panels</h2>
             <p className="mx-auto max-w-2xl text-center text-base leading-relaxed text-zinc-300 sm:text-lg">
               AI agents are entering the economy: booking and transacting on our
               behalf. However, services receiving these requests have{" "}
@@ -74,38 +50,12 @@ export default function HomePage() {
             </p>
 
             <ol className="mt-12 grid list-none gap-4 p-0 md:grid-cols-3">
-              {processSteps.map((item) => (
-                <li key={item.step}>
-                  <article className="flex h-full flex-col rounded-2xl border border-white/10 bg-[#1f1f1f] p-6">
-                    <span
-                      className="text-4xl font-extralight tabular-nums leading-none text-zinc-500"
-                      aria-hidden
-                    >
-                      {item.step}
-                    </span>
-                    <h3 className="mt-3 text-base font-semibold text-white">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                      {item.subtitle}
-                    </p>
-                    <p className="mt-3 text-sm leading-relaxed text-zinc-300">
-                      {item.body}
-                    </p>
-                    {"bullets" in item && item.bullets ? (
-                      <ul className="mt-4 space-y-2.5 text-sm leading-snug text-zinc-300">
-                        {item.bullets.map((b) => (
-                          <li key={b.text} className="flex gap-2.5">
-                            <span
-                              className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${b.dotClass}`}
-                              aria-hidden
-                            />
-                            <span>{b.text}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </article>
+              {scenarioCardPlaceholders.map((i) => (
+                <li key={i}>
+                  <article
+                    className="min-h-[220px] rounded-2xl border border-white/10 bg-[#1f1f1f] p-6 sm:min-h-[240px]"
+                    aria-label={`Scenario panel ${i} of 3`}
+                  />
                 </li>
               ))}
             </ol>
