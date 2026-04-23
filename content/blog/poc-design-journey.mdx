@@ -1,20 +1,112 @@
 ---
-title: "Designing the Agent ID proof of concept"
-date: "2026-04-01"
+title: "Visualizing Agent IDs"
+date: "2026-04-23"
 author: "Aditya Mehta"
-description: "How we turned composite credential ideas into an interactive demo for policymakers — trade-offs, field-level toggles, and incident response as the lens."
+description: "A reflection on diagramming and building the Agent ID proof of concept with Singapore AI Safety Hub — from jargon to ecosystem, credential, and consequences."
 ---
 
-We set out to make abstract identity concepts legible to people who will not read a protocol spec. The proof of concept had to show *who* signs *what*, and what a receiving service can still do when a section is missing.
+I entered ERA working on an Agent ID project for Singapore AI Safety Hub. This post is a reflection of how visualizing Agent IDs was valuable, for both research and non-research purposes.
 
-## From credential fields to service questions
+The premise was to create a standardized identity protocol for Agents before we let them run around on the web.
 
-Instead of exposing raw JWT-style fields, we grouped claims into the questions a polyclinic or insurer actually asks: who is behind this agent, who deployed it, what is it allowed to do here, is it safe, and if something goes wrong, who answers the phone. Each question maps to independently signed content from developers, providers, deployers, or certifiers.
+How could we know if they were safe? How could the site know? We wanted to treat agent IDs as a set of identifiers and metadata that AI agents should include in their interactions with other entities.
 
-## Incident response as the stress test
+As I started with the project, I was met with jargon that was hard to understand. This was research that was previously done, but I couldn’t make sense of it yet.
 
-Governance conversations often stop at “authentication.” We used incident response phases as the consequence layer: when identity or safety metadata is absent, specific phases do not degrade gracefully — they stop. That asymmetry is easier to argue for in a regulator-facing demo than yet another architecture diagram.
+![Agent ID research diagram: ecosystem of developers, providers, deployers, services, registry, logging, and incident responders, connected by arrows.](/images/blog/website-amin-pic.webp)
 
-## What we would do next
+_Shoutout Sam and Amin for creating this beaut, though it took a while to understand_
 
-Future iterations may tighten narrative copy for non-technical stakeholders and align field names with whichever standardisation process picks up composite credentials. The goal of this build is fast iteration with SASH and ERA Cambridge, not a frozen product.
+First off, this was complex. Where was this registry coming into the picture? What was an instance? What were these arrows pointing to and back? What was the relationship of the incident responders to the service and logging?
+
+To reorient how I thought about the impact of the Agent ID, I tried creating this restructured diagram. The motivation for doing this was to remind myself of the bigger picture of an Agent ID.
+
+![Diagram: who contributes to an Agent ID, what the service sees, and access outcomes — deny, require more information, or grant access.](/images/blog/website-what-changes.webp)
+
+_bigger picture: enabled_
+
+Once I was able to visualize the workflow, I wanted to understand the internal mechanisms of the ID. Why did this matter? What parts of the IDs could unlock certain answers?
+
+To this end, I tried creating a clickable planning tool for myself. This was a supply chain that was hard to hold in my head. But after the process and end goal were established, it made sense to try building an intuition for why this project even mattered in the first place.
+
+But after sharing this with Sam (my project mentor, who has carried more of this project than I have and is the reason any of the good design instincts are where they are), he reframed it as a transition step between a static diagram and a proof of concept.
+
+After this, we tried to reckon if other people trying to wrap their heads around the project could be in a similar position. In some ways, the ways in which I was struggling to understand Agent IDs could be representative of Singaporean government stakeholders as well. They were also smart, had a lot of context, but perhaps had not built their intuition for Agent IDs from first principles yet.
+
+So, we re-evaluated the nature of the project and figured we’d spend the project on building something that would make the case for why the credential mattered in the first place. We also wanted to think from the stakeholders’ perspective. Would they care more about what the credential contained or what the service lost when a given section of ID was removed?
+
+This question turned out to be the one the PoC was built around. We settled on three views, each answering a slightly sharper version of it.
+
+## Ecosystem
+
+The first view was the one I’d originally built for myself.
+
+Here, you could pick an actor (developer, provider, deployer, or the agent instance itself) and see three things: what they contribute to the credential, what incentive they have for contributing it, and what the ecosystem is counting on them for.
+
+Keeping contribution and benefit in separate columns allowed us to notice that the seemingly menial distinctions, like the fact that the agent instance itself contributed little to what was signed in the credential, or that the incentives driving the deployer to attach identity were opposite to the incentives driving the provider.
+
+![Agent supply chain: Developer trains the foundation model, Provider builds the agent product, Deployer authorizes use, Agent instance carries the active session.](/images/blog/website-credential-info.webp)
+
+## Credential
+
+I’d started with a naive JSON payload with seven sections and a handful of signatures. While conceptually accurate, it wouldn’t make sense to anyone without the technical eye to find hashes and schemas intuitive.
+
+Instead of “provider_signature: [hash]” →
+
+“Who built this agent?” → Verified: MedBot SG
+
+Instead of safety. certification.issuer: SG_AISI →
+
+“Has this model been safety tested?” → Yes, certified by SG AISI, valid until July 2026.”
+
+In these question-answer pairs, we found that the legibility of the information made a lot more sense.
+
+![Composite credential as a service request card: provider-signed, deployer-signed, independent safety assurance, and unsigned instance session fields, with notes on independent signers and cryptographic binding.](/images/blog/website-credential-ACTUAL-info.webp)
+
+## Consequences
+
+This third view carried the most weight. It answered the question at the top of this section. Instead of showing what the credential contains, it showed what a service loses when a section is missing. By flipping between different presets — No ID, Partial ID, Full ID — we could watch specific phases of incident response gradually fail in the bottom half of the screen.
+
+![Three levels of verifiable identity: none (deny), partial (require more information), and full composite (grant access), with captions for what the service can verify in each case.](/images/blog/website-my-pic.webp)
+
+As we found that this set of hard stops prevented partial answers to the accountability questions, Sam and I began calling this phase termination.
+
+It was the subtraction principle that made this visible. In an earlier version of the PoC, where we mapped all seven sections, every field, every signature, the credential looked like an onerous pile of bureaucracy. However, by showing what got lost when a section was removed, the absence of the argument for each section became the argument itself.
+
+## The PoC
+
+The interactive demo on this site is what we built to make that case directly.
+
+## Design choices
+
+The views look the way they do because of a few design choices we made early and stuck with.
+
+We decided not to go deep into the protocol mechanisms or stuff the PoC with details. Throughout the design process, we tried to get to a point where it can explain one thing well.
+
+Actor-level toggles over field-level toggles. The obvious move in the Consequences view would’ve been to let the user untick individual fields. If the user could uncheck an option like “valid_until,” they could see what changes.
+
+However, Sam provided valuable feedback that unticking one field could make it hard to say what would break for the service. However, unticking an entire actor — i.e., removing the deployer and their contribution to the safety certification — the phase termination would be cleaner.
+
+## What building forced us to understand
+
+Most of what I learned during the project came from having to decide what went where on the screen.
+
+The sentence “the agent instance is one of the actors in the supply chain” does not require one to say what the agent instance actually contributes. However, when designing the UI, each panel has to hold something specific, as does each toggle.
+
+In the working draft, the agent instance is a clear actor. It gets a row in the diagram and sits alongside the provider and deployer. However, when deciding what went in its panel, something felt off: the provider signs for the model and for its own claims, while a certifier signs for safety, and the deployer signs for the deployer’s own claims and the agent’s capabilities.
+
+The agent instance, at runtime, didn’t sign anything. It carries what others have already signed, attaches it to a request, and hands it to the service. To this end, Sam and I ended up calling this carrier instead of an author.
+
+Instead of being a source of trust, the agent instance was downstream of it. This may seem menial, but it was part of building a concrete intuition of the Agent ID technical specifications. This allowed us to truly internalize the intuition that the agent wouldn’t “prove” anything about itself that isn’t backed by a signature from someone else.
+
+## Closing thoughts
+
+If you’re a policy or governance researcher, consider building a demo.
+
+If you are writing policy recommendations for a technical problem, such as one that might require infrastructure like Agent IDs, your specification will also have to exist. However, the act of deciding what to put on the screen might surface questions that conceptual research will not force you to ask.
+
+Moreover, once your PoC exists, it can become a substrate for better planning. Perhaps you, too, will have your own Sam, and it’ll be easier to screen share and point to specific parts of your demo to surface where you might want solutions. Or, you want to focus on field-building or advocacy work for your research, in which case, tabletop exercises or simulations run over many agents can help people interact and build their intuition from first principles.
+
+For Agent IDs, we might now be able to ask how strict a service should be about accepting agents, or be able to play around with the percentage of malicious agents that change the tradeoff between access and filtering.
+
+Building demos has never been cheaper, and you’ll never know how it might enhance your own understanding, or someone else’s.
