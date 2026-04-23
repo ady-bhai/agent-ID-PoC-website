@@ -65,7 +65,7 @@ const CAPTIONS: Record<Stage, string> = {
   arrival: "An AI agent requests access to a service.",
   questioning: "The service has questions it needs answered.",
   unanswered: "It has no way to get them.",
-  binary: "So the service must choose.",
+  binary: "Without these answers, services face a binary choice.",
 };
 
 const DIPTYCH_LABELS = {
@@ -691,7 +691,7 @@ function StaticNarrativeFallback() {
           margin: 0,
         }}
       >
-        So the service must choose.
+        Without these answers, services face a binary choice.
       </p>
     </div>
   );

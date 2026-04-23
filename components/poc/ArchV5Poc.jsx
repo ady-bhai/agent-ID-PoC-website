@@ -1991,7 +1991,10 @@ function SplashView() {
     <div
       style={{
         background: C.bg,
-        minHeight: "100vh",
+        // Fill the parent frame (whose height is set by `AgentIdPoc`)
+        // rather than demanding a full viewport.
+        height: "100%",
+        minHeight: 520,
         color: C.text,
         fontFamily: "'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', monospace",
         display: "flex",
@@ -2109,7 +2112,11 @@ function AppShell() {
     <div
       style={{
         background: C.bg,
-        minHeight: "100vh",
+        // Fill the parent frame (whose height is set by `AgentIdPoc`)
+        // rather than demanding a full viewport. `minHeight` is a soft
+        // floor in case the parent is unusually short.
+        height: "100%",
+        minHeight: 640,
         color: C.text,
         fontFamily: "'IBM Plex Mono', 'JetBrains Mono', 'Fira Code', monospace",
         display: "flex",

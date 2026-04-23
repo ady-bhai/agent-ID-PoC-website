@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AgentIdPoc } from "@/components/poc/AgentIdPoc";
 import { AgentNarrativeSection } from "@/components/home/AgentNarrativeSection";
-import { CredentialBridge } from "@/components/home/CredentialBridge";
+import { AgentIdAnswerSection } from "@/components/home/AgentIdAnswerSection";
 import { siteConfig } from "@/lib/site";
 
 /** Matches `Nav` (`max-w-4xl` + `px-4 sm:px-6`) so hero and PoC share one left edge. */
@@ -53,8 +53,8 @@ export default function HomePage() {
       {/* ── Scroll-pinned narrative: the problem, no solution ──────── */}
       <AgentNarrativeSection />
 
-      {/* ── Bridge: three questions, one credential ───────────────── */}
-      <CredentialBridge />
+      {/* ── Agent IDs answer the questions the service couldn't ───── */}
+      <AgentIdAnswerSection />
 
       {/* ── Interactive PoC ────────────────────────────────────────── */}
       <section className="border-b border-slate-200/80 bg-slate-50/50">
