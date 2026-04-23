@@ -19,3 +19,219 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/*
+ * ── Policy memo (app/memo) ────────────────────────────────────────────
+ * The memo lives on a warm cream background with editorial typography
+ * aimed at long-form reading. Styles are kept component-scoped via
+ * `.memo-*` classes rather than relying on @tailwindcss/typography, so
+ * tables and sidenotes can look distinctly policy-memo rather than
+ * blog-post.
+ */
+.memo-section {
+  scroll-margin-top: 96px;
+  padding-top: 2.25rem;
+  padding-bottom: 0.75rem;
+}
+
+.memo-section + .memo-section {
+  border-top: 1px solid rgb(226 232 240 / 0.9);
+}
+
+.memo-h2 {
+  scroll-margin-top: 96px;
+  color: #1a2744;
+  font-weight: 600;
+  font-size: 1.75rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem 0;
+}
+
+.memo-h3 {
+  scroll-margin-top: 96px;
+  color: #1a2744;
+  font-weight: 600;
+  font-size: 1.125rem;
+  letter-spacing: -0.005em;
+  margin: 2.25rem 0 0.75rem 0;
+}
+
+.memo-section p {
+  margin: 0 0 1.1em 0;
+  color: #1f2937;
+}
+
+.memo-section p:last-child {
+  margin-bottom: 0;
+}
+
+.memo-section strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.memo-link {
+  color: #0f4c5c;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.memo-link:hover {
+  color: #1a2744;
+}
+
+.memo-list {
+  list-style: disc;
+  margin: 0 0 1.25em 0;
+  padding-left: 1.35rem;
+  color: #1f2937;
+}
+
+.memo-list--ordered {
+  list-style: decimal;
+}
+
+.memo-list li {
+  margin-bottom: 0.65em;
+  line-height: 1.7;
+}
+
+.memo-list li::marker {
+  color: #94a3b8;
+}
+
+/* ── Tables ──────────────────────────────────────────────────────────── */
+.memo-table {
+  margin: 2rem 0;
+}
+
+.memo-table__caption {
+  text-align: left;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #475569;
+  margin: 0 0 0.65rem 0;
+  caption-side: top;
+}
+
+.memo-table__caption strong {
+  color: #1a2744;
+}
+
+.memo-table__scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgb(15 23 42 / 0.02);
+}
+
+.memo-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #1f2937;
+}
+
+.memo-table th,
+.memo-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.75rem 0.95rem;
+  border-bottom: 1px solid #edf2f7;
+  border-right: 1px solid #edf2f7;
+}
+
+.memo-table th:last-child,
+.memo-table td:last-child {
+  border-right: 0;
+}
+
+.memo-table tbody tr:last-child th,
+.memo-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.memo-table thead th {
+  background: #f7f3ea;
+  color: #1a2744;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.memo-table tbody th {
+  background: #fdfbf6;
+  color: #1a2744;
+  font-weight: 600;
+  white-space: normal;
+}
+
+.memo-table__groupheader {
+  background: #1a2744 !important;
+  color: #ffffff !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.55rem 0.95rem !important;
+  border-right: 0 !important;
+}
+
+.memo-table p {
+  margin: 0 0 0.55em 0;
+}
+
+.memo-table p:last-child {
+  margin-bottom: 0;
+}
+
+.memo-hypothesis {
+  margin-top: 0.7em !important;
+  padding-top: 0.55em;
+  border-top: 1px dashed #cbd5e1;
+  color: #0f4c5c !important;
+}
+
+.memo-design-headline {
+  color: #0f4c5c !important;
+  font-weight: 600;
+  margin-bottom: 0.55em !important;
+}
+
+/* ── Figures ─────────────────────────────────────────────────────────── */
+.memo-figure {
+  margin: 2rem 0;
+}
+
+.memo-figure__frame {
+  border: 1px dashed #c7b9a5;
+  background: #fffaf1;
+  border-radius: 10px;
+  padding: 2rem 1.5rem;
+}
+
+/* ── Callouts ────────────────────────────────────────────────────────── */
+.memo-callout {
+  margin: 2rem 0;
+  padding: 1.1rem 1.25rem;
+  border-left: 3px solid #0f4c5c;
+  background: #fdfbf6;
+  border-radius: 0 8px 8px 0;
+  color: #1f2937;
+}
+
+.memo-callout__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0f4c5c;
+  margin: 0 0 0.4rem 0 !important;
+}
