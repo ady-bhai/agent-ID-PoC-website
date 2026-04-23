@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MemoToc, MemoTocMobile, type MemoTocItem } from "@/components/memo/MemoToc";
+import { withPublicBasePath } from "@/lib/paths";
 
 export const metadata: Metadata = {
   title: "Designing Agent IDs — Policy memo",
@@ -8,7 +9,14 @@ export const metadata: Metadata = {
     "A Singapore AI Safety Hub (SASH) policy memo analysing the design space for agent ID systems: functions, existing protocols, private incentives, and ten guiding questions.",
 };
 
-const PDF_HREF = "/docs/agent-ids-policy-memo-sash-2026-03-31.pdf";
+/**
+ * PDF is served from `/public/docs/`. On GitHub Pages the real URL
+ * includes the repo base path, which `<a href>` does NOT auto-prefix
+ * the way `<Link>` does — so we prepend it manually.
+ */
+const PDF_HREF = withPublicBasePath(
+  "/docs/agent-ids-policy-memo-sash-2026-03-31.pdf",
+);
 
 /**
  * The table of contents labels mostly mirror the memo's own section

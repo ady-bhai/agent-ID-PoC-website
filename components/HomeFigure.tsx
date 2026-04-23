@@ -1,12 +1,5 @@
 import Image from "next/image";
-
-/** GitHub Pages serves under a repo prefix; `next/image` can omit it in static export. */
-function withPublicBasePath(path: string): string {
-  const raw = process.env.NEXT_PUBLIC_BASE_PATH?.trim() ?? "";
-  const base = raw === "/" ? "" : raw.replace(/\/$/, "");
-  if (!path.startsWith("/") || !base) return path;
-  return `${base}${path}`;
-}
+import { withPublicBasePath } from "@/lib/paths";
 
 type HomeFigureProps = {
   /** Path under `/public`, e.g. `/images/figures/market-incentive-gap.png` */

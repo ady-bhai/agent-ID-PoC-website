@@ -8,6 +8,9 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import { withPublicBasePath } from "@/lib/paths";
+
+const CARD_IMAGE_SRC = withPublicBasePath("/images/home/agent-id-card.png");
 
 /**
  * CredentialBridge
@@ -356,7 +359,7 @@ function DesktopLayout({
         }}
       >
         <Image
-          src="/images/home/agent-id-card.png"
+          src={CARD_IMAGE_SRC}
           alt="An Agent ID credential card with three colored rows representing the three identity fields."
           fill
           sizes="300px"
@@ -413,7 +416,7 @@ function MobileLayout({
         }}
       >
         <Image
-          src="/images/home/agent-id-card.png"
+          src={CARD_IMAGE_SRC}
           alt="An Agent ID credential card with three colored rows representing the three identity fields."
           fill
           sizes="260px"

@@ -9,6 +9,7 @@ import {
   type CSSProperties,
   type RefObject,
 } from "react";
+import { withPublicBasePath } from "@/lib/paths";
 
 /**
  * AgentNarrativeSection
@@ -236,7 +237,7 @@ function Illustration({
 }) {
   return (
     <Image
-      src={image.src}
+      src={withPublicBasePath(image.src)}
       alt={image.alt}
       fill
       priority={priority}
