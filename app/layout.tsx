@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { StewardsRow } from "@/components/home/StewardsRow";
 import { siteConfig } from "@/lib/site";
 
 const inter = Inter({
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col font-sans antialiased">
         <Nav />
         <main className="flex-1">{children}</main>
+        <StewardsRow />
         <Footer />
       </body>
     </html>

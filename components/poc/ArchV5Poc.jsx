@@ -728,12 +728,52 @@ const INITIAL_AGENT_STATE = {
 
 const AgentIdStateContext = createContext(null);
 
-function AgentIdStateProvider({ children }) {
-  const [state, setState] = useState(INITIAL_AGENT_STATE);
+const VALID_VIEWS = new Set(["splash", "ecosystem", "credential", "consequences"]);
+
+function AgentIdStateProvider({ children, view, onViewChange, hideSplash }) {
+  // When `view` is provided externally (or splash is hidden), seed the
+  // initial currentView from the prop rather than landing on the splash.
+  const [state, setState] = useState(() => {
+    const seedView = VALID_VIEWS.has(view)
+      ? view
+      : hideSplash
+        ? "ecosystem"
+        : INITIAL_AGENT_STATE.currentView;
+    return { ...INITIAL_AGENT_STATE, currentView: seedView };
+  });
+
+  // Render-time sync: when the controlled `view` prop changes, mirror it
+  // into local state. React explicitly endorses this over an effect for
+  // syncing a prop into state — the conditional setState short-circuits
+  // additional renders once values match.
+  if (VALID_VIEWS.has(view) && state.currentView !== view) {
+    setState((prev) =>
+      prev.currentView === view ? prev : { ...prev, currentView: view },
+    );
+  }
 
   const actorToggles = useMemo(
     () => deriveActorToggles(state.fieldToggles),
     [state.fieldToggles],
+  );
+
+  // Internal callers (e.g. inspector "next view" button) update view via
+  // setPartialState({ currentView }). Wrap the setter so any such update
+  // is forwarded to the parent's onViewChange — the parent then drives the
+  // controlled `view` prop, and the render-time sync above is a no-op.
+  const setPartialState = useCallback(
+    (patch) => {
+      if (
+        patch &&
+        "currentView" in patch &&
+        VALID_VIEWS.has(patch.currentView) &&
+        patch.currentView !== view
+      ) {
+        onViewChange?.(patch.currentView);
+      }
+      setState((prev) => ({ ...prev, ...patch }));
+    },
+    [view, onViewChange],
   );
 
   const value = useMemo(
@@ -741,10 +781,9 @@ function AgentIdStateProvider({ children }) {
       state,
       actorToggles,
       setState,
-      setPartialState: (patch) =>
-        setState((prev) => ({ ...prev, ...patch })),
+      setPartialState,
     }),
-    [state, actorToggles],
+    [state, actorToggles, setPartialState],
   );
 
   return (
@@ -2093,18 +2132,44 @@ function SplashView() {
 
 // ── Main shell — splash-aware ──
 
-export default function ArchV5() {
+/**
+ * @typedef {"ecosystem" | "credential" | "consequences"} AgentIdPocControlledView
+ *
+ * @typedef {object} ArchV5Props
+ * @property {AgentIdPocControlledView} [view]
+ *   Controlled view. When provided, the PoC renders the matching lens and
+ *   stays in sync with external navigation.
+ * @property {(view: AgentIdPocControlledView) => void} [onViewChange]
+ *   Mirrors internal view changes (e.g. inspector "next view" actions) back
+ *   to the parent.
+ * @property {boolean} [hideSplash]
+ *   Skip the splash landing screen.
+ * @property {boolean} [hideViewTabs]
+ *   Hide the built-in 1/2/3 view tab row.
+ */
+
+/** @param {ArchV5Props} [props] */
+export default function ArchV5({
+  view,
+  onViewChange,
+  hideSplash = false,
+  hideViewTabs = false,
+} = {}) {
   return (
-    <AgentIdStateProvider>
-      <AppShell />
+    <AgentIdStateProvider
+      view={view}
+      onViewChange={onViewChange}
+      hideSplash={hideSplash}
+    >
+      <AppShell hideSplash={hideSplash} hideViewTabs={hideViewTabs} />
     </AgentIdStateProvider>
   );
 }
 
-function AppShell() {
+function AppShell({ hideSplash = false, hideViewTabs = false }) {
   const { state } = useAgentIdState();
 
-  if (state.currentView === "splash") {
+  if (!hideSplash && state.currentView === "splash") {
     return <SplashView />;
   }
 
@@ -2124,7 +2189,7 @@ function AppShell() {
       }}
     >
       <TopControlBar />
-      <ViewTabs />
+      {hideViewTabs ? null : <ViewTabs />}
       <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
         <div style={{ flex: 1, minHeight: 0 }}>
           <LensSwitcher />

@@ -28,12 +28,11 @@ export function ProjectIntro() {
           {siteConfig.tagline}
         </h1>
         <div className="flex flex-col gap-4 text-base leading-relaxed text-[#1A1A1A] sm:text-lg">
-          <p>{siteConfig.description}</p>
           <p>
-            We work in the open with the Singapore AI Safety Hub. The memo,
-            the proof of concept, and the meeting notes that shaped them all
-            live in one repository — read the work, file an issue, or open a
-            pull request.
+            We treat agent IDs as a set of identifiers and metadata that AI
+            agents should include in their interactions with other entities.
+            We have concluded a first policy memo on the topic, which maps
+            the landscape and outlines design options.
           </p>
         </div>
         <p className="text-sm text-[#6B6B6B]">

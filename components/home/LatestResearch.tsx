@@ -2,11 +2,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 /**
- * LatestResearch
- * ──────────────
- * Home-page section that surfaces the project's research outputs as a
- * three-card row. Visual reference: evalevalai.com — open, editorial,
- * collaborative-research vibe.
+ * LatestResearch ("Recently published")
+ * ──────────────────────────────────────
+ * Home-page section that surfaces the community's recent research
+ * outputs as a three-card row. Visual reference: evalevalai.com — open,
+ * editorial, collaborative-research vibe.
  *
  * Each card has:
  *   - a decorative top illustration (inline SVG, server-renderable)
@@ -16,8 +16,9 @@ import type { ReactNode } from "react";
  *   - optional tag pills
  *
  * Right now only the policy memo is published. The other two cards are
- * intentionally rendered as upcoming placeholders so the section reads
- * as a roadmap rather than vapourware — when those artefacts ship,
+ * intentionally rendered as upcoming placeholders with a "Coming soon"
+ * pill and a "Get notified" link into /join — the section reads as a
+ * public roadmap rather than vapourware. When those artefacts ship,
  * promote them by populating the matching entry in `RESEARCH_ITEMS`
  * and dropping the `upcoming` flag.
  *
@@ -78,29 +79,27 @@ export function LatestResearch() {
       aria-labelledby="latest-research-heading"
       className="border-b border-slate-200/80 bg-[#FBF7F0]"
     >
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        {/* ── Header row: title + eyebrow + view-all ─────────────── */}
+      <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+        {/* ── Header row: eyebrow + title + view-all ──────────────── */}
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
+          <div className="flex flex-col gap-2">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#6B6B6B]">
+              Research outputs
+            </p>
             <h2
               id="latest-research-heading"
               className="text-3xl font-semibold tracking-tight text-[#1a2744] sm:text-4xl"
             >
-              Latest research
+              Recently published
             </h2>
           </div>
-          <div className="flex flex-col items-start gap-3 sm:items-end">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#6B6B6B]">
-              Research outputs
-            </p>
-            <Link
-              href="/about"
-              className="inline-flex items-center gap-2 rounded-full border border-[#1a2744] px-4 py-1.5 text-sm font-semibold text-[#1a2744] transition-colors hover:bg-[#1a2744] hover:text-white"
-            >
-              View all
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-2 rounded-full border border-[#1a2744] px-4 py-1.5 text-sm font-semibold text-[#1a2744] transition-colors hover:bg-[#1a2744] hover:text-white"
+          >
+            View all
+            <span aria-hidden>→</span>
+          </Link>
         </div>
 
         {/* ── Cards ─────────────────────────────────────────────── */}
@@ -125,16 +124,25 @@ export default LatestResearch;
 function ResearchCard({ item }: { item: ResearchItem }) {
   const isLink = !item.upcoming && item.href !== "#";
 
-  const body = (
+  return (
     <article
       className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.06),0_8px_24px_rgba(15,23,42,0.05)] transition-all ${
         isLink
           ? "hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(15,23,42,0.08),0_12px_32px_rgba(15,23,42,0.08)]"
-          : "opacity-90"
+          : ""
       }`}
     >
-      <div className="aspect-[16/10] w-full border-b border-slate-200 bg-[#F5F0E8]">
+      <div className="relative aspect-[16/10] w-full border-b border-slate-200 bg-[#F5F0E8]">
         {item.illustration}
+        {item.upcoming ? (
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-[#0f4c5c]/20 bg-white/95 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#0f4c5c] shadow-sm backdrop-blur">
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-[#0f4c5c]"
+              aria-hidden
+            />
+            Coming soon
+          </span>
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-6">
@@ -165,7 +173,7 @@ function ResearchCard({ item }: { item: ResearchItem }) {
         </p>
 
         {item.tags.length > 0 ? (
-          <ul className="mt-auto flex flex-wrap gap-2 pt-2">
+          <ul className="flex flex-wrap gap-2 pt-1">
             {item.tags.map((tag) => (
               <li
                 key={tag}
@@ -176,11 +184,19 @@ function ResearchCard({ item }: { item: ResearchItem }) {
             ))}
           </ul>
         ) : null}
+
+        {item.upcoming ? (
+          <Link
+            href="/join"
+            className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-semibold text-[#0f4c5c] underline-offset-4 hover:underline"
+          >
+            Get notified
+            <span aria-hidden>→</span>
+          </Link>
+        ) : null}
       </div>
     </article>
   );
-
-  return body;
 }
 
 /* ────────────────────────────────────────────────────────────── */

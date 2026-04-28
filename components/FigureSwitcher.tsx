@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useEffect,
   useId,
   useMemo,
   useRef,
@@ -19,8 +20,11 @@ export type FigureItem = {
    * Pre-rendered content for the right pane. Stays mounted across switches.
    * Must be a `ReactNode` (not a function) so server components can hand
    * `<FigureSwitcher>` an items array across the client boundary.
+   *
+   * Optional when the parent supplies `renderPanel` to render a single
+   * shared panel instead of one panel per item.
    */
-  content: ReactNode;
+  content?: ReactNode;
 };
 
 type Props = {
@@ -35,6 +39,21 @@ type Props = {
   syncHash?: boolean;
   /** Optional aria-label for the rail (tablist). */
   ariaLabel?: string;
+  /**
+   * Controlled selection. When provided, the rail reads selection from
+   * `value` and reports user clicks (and keyboard navigation) via
+   * `onChange` instead of using internal state. `syncHash` still works.
+   */
+  value?: string;
+  onChange?: (id: string) => void;
+  /**
+   * When provided, the right pane renders a single shared panel via
+   * `renderPanel(activeId)` rather than one `tabpanel` per item. Useful
+   * when the panel needs to keep a single mounted instance (e.g. so that
+   * internal state survives across rail clicks). Items' own `content`
+   * is ignored in this mode.
+   */
+  renderPanel?: (activeId: string) => ReactNode;
 };
 
 /**
@@ -52,9 +71,13 @@ export function FigureSwitcher({
   className = "",
   syncHash = false,
   ariaLabel = "Figures",
+  value,
+  onChange,
+  renderPanel,
 }: Props) {
   const reactId = useId();
   const groupId = `figswitch-${reactId.replace(/[:]/g, "")}`;
+  const isControlled = value !== undefined;
 
   const initialId = useMemo(() => {
     const fallback = defaultId && items.some((i) => i.id === defaultId)
@@ -68,7 +91,7 @@ export function FigureSwitcher({
   // output; the page is statically exported so server HTML cannot know the
   // hash anyway, and any one-frame mismatch is invisible (panels are siblings
   // toggled with `hidden`).
-  const [activeId, setActiveId] = useState<string>(() => {
+  const [internalId, setInternalId] = useState<string>(() => {
     if (syncHash && typeof window !== "undefined") {
       const fromHash = window.location.hash.replace(/^#/, "");
       if (fromHash && items.some((i) => i.id === fromHash)) {
@@ -77,17 +100,34 @@ export function FigureSwitcher({
     }
     return initialId;
   });
+  const activeId = isControlled ? (value as string) : internalId;
   const railRef = useRef<HTMLDivElement | null>(null);
+
+  // In controlled mode, the parent owns selection state, but we still want
+  // hash-deeplinking to work on first mount: if the URL hash matches an
+  // item, notify the parent once after hydration so it can sync.
+  useEffect(() => {
+    if (!isControlled || !syncHash || typeof window === "undefined") return;
+    const fromHash = window.location.hash.replace(/^#/, "");
+    if (fromHash && fromHash !== value && items.some((i) => i.id === fromHash)) {
+      onChange?.(fromHash);
+    }
+    // Run once on mount only — subsequent hash changes are driven by clicks.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const select = useCallback(
     (id: string) => {
-      setActiveId(id);
+      if (!isControlled) {
+        setInternalId(id);
+      }
+      onChange?.(id);
       if (syncHash && typeof window !== "undefined") {
         const url = `${window.location.pathname}${window.location.search}#${id}`;
         window.history.replaceState(null, "", url);
       }
     },
-    [syncHash],
+    [isControlled, onChange, syncHash],
   );
 
   const onKeyDown = useCallback(
@@ -204,24 +244,40 @@ export function FigureSwitcher({
         })}
       </div>
 
-      {/* Right pane: all panels mounted; visibility toggled. */}
+      {/* Right pane.
+        * Default mode: every item's content stays mounted; visibility is
+        *   toggled with `hidden` so heavy panels keep their internal state.
+        * Shared-panel mode (`renderPanel`): a single panel is rendered for
+        *   the active id, useful when a single mounted instance should
+        *   serve all rail items (e.g. preserving complex internal state). */}
       <div className="min-w-0">
-        {items.map((item) => {
-          const isActive = item.id === activeId;
-          return (
-            <div
-              key={item.id}
-              role="tabpanel"
-              id={`${groupId}-panel-${item.id}`}
-              aria-labelledby={`${groupId}-tab-${item.id}`}
-              aria-hidden={!isActive}
-              hidden={!isActive}
-              className="motion-safe:transition-opacity motion-safe:duration-200"
-            >
-              {item.content}
-            </div>
-          );
-        })}
+        {renderPanel ? (
+          <div
+            role="tabpanel"
+            id={`${groupId}-panel-${activeId}`}
+            aria-labelledby={`${groupId}-tab-${activeId}`}
+            className="motion-safe:transition-opacity motion-safe:duration-200"
+          >
+            {renderPanel(activeId)}
+          </div>
+        ) : (
+          items.map((item) => {
+            const isActive = item.id === activeId;
+            return (
+              <div
+                key={item.id}
+                role="tabpanel"
+                id={`${groupId}-panel-${item.id}`}
+                aria-labelledby={`${groupId}-tab-${item.id}`}
+                aria-hidden={!isActive}
+                hidden={!isActive}
+                className="motion-safe:transition-opacity motion-safe:duration-200"
+              >
+                {item.content}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

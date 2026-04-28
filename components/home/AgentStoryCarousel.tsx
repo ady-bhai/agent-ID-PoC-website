@@ -158,7 +158,7 @@ export function AgentStoryCarousel() {
         color: PALETTE.ink,
         borderTop: `1px solid ${PALETTE.border}`,
         borderBottom: `1px solid ${PALETTE.border}`,
-        padding: "clamp(56px, 10vw, 96px) clamp(16px, 5vw, 48px)",
+        padding: "clamp(40px, 7vw, 72px) clamp(16px, 5vw, 48px)",
       }}
     >
       <div
@@ -170,6 +170,52 @@ export function AgentStoryCarousel() {
           gap: "clamp(20px, 3vw, 32px)",
         }}
       >
+        {/* ── Section header (eyebrow + heading + lede) ─────────────── */}
+        <header
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+            maxWidth: 640,
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: PALETTE.inkDim,
+            }}
+          >
+            The problem
+          </p>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "clamp(24px, 3.4vw, 34px)",
+              fontWeight: 600,
+              letterSpacing: "-0.01em",
+              lineHeight: 1.15,
+              color: PALETTE.navy,
+            }}
+          >
+            Why agent IDs?
+          </h2>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "clamp(15px, 1.7vw, 17px)",
+              lineHeight: 1.55,
+              color: PALETTE.slate800,
+            }}
+          >
+            Services meeting an AI agent for the first time can&apos;t answer
+            three basic questions. An agent ID is how those answers get
+            carried in.
+          </p>
+        </header>
         {/* ── Card viewport (clips the track) ───────────────────────── */}
         <div
           style={{
@@ -223,7 +269,7 @@ export function AgentStoryCarousel() {
           aria-live="polite"
           style={{
             margin: 0,
-            minHeight: "3.5em",
+            minHeight: "2.5em",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

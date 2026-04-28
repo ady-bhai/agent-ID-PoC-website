@@ -2,6 +2,8 @@
 
 import ArchV5Poc from "./ArchV5Poc.jsx";
 
+export type AgentIdPocView = "ecosystem" | "credential" | "consequences";
+
 type AgentIdPocProps = {
   /**
    * `full` — homepage: natural-height panel sized via `height`, so the
@@ -13,9 +15,27 @@ type AgentIdPocProps = {
    *          unreasonably when a user has a short viewport.
    */
   variant?: "page" | "home" | "full";
+  /**
+   * Controlled view. When provided, the PoC renders the matching lens
+   * (Ecosystem / Credential / Consequences) and stays in sync with
+   * external navigation. Internal "next view" actions still work and
+   * are mirrored back via `onViewChange`.
+   */
+  view?: AgentIdPocView;
+  onViewChange?: (view: AgentIdPocView) => void;
+  /** Skip the splash landing screen (use when an external chrome handles entry). */
+  hideSplash?: boolean;
+  /** Hide the PoC's built-in 1/2/3 view tab row (use when external chrome owns navigation). */
+  hideViewTabs?: boolean;
 };
 
-export function AgentIdPoc({ variant = "page" }: AgentIdPocProps) {
+export function AgentIdPoc({
+  variant = "page",
+  view,
+  onViewChange,
+  hideSplash,
+  hideViewTabs,
+}: AgentIdPocProps) {
   const isFull = variant === "full";
   const isHome = variant === "home";
 
@@ -57,7 +77,12 @@ export function AgentIdPoc({ variant = "page" }: AgentIdPocProps) {
       style={outerStyle}
     >
       <div className={innerClass} style={innerStyle}>
-        <ArchV5Poc />
+        <ArchV5Poc
+          view={view}
+          onViewChange={onViewChange}
+          hideSplash={hideSplash}
+          hideViewTabs={hideViewTabs}
+        />
       </div>
     </div>
   );
