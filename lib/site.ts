@@ -41,8 +41,8 @@ export const siteConfig = {
    */
   partnerLogos: [
     {
-      name: "Singapore AI Computing",
-      shortName: "Singapore AC",
+      name: "Singapore AI Safety Institute",
+      shortName: "Singapore AISI",
       image: "/images/partners/singapore-ac.svg",
     },
     {
@@ -52,8 +52,8 @@ export const siteConfig = {
       image: "/images/partners/sash.svg",
     },
     {
-      name: "Korea AI Computing",
-      shortName: "Korea AC",
+      name: "Korea AI Safety Institute",
+      shortName: "Korea AISI",
       image: "/images/partners/korea-ac.svg",
     },
   ] satisfies readonly PartnerLogo[],
