@@ -7,9 +7,8 @@ import { siteConfig } from "@/lib/site";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/memo", label: "Policy memo" },
+  { href: "/memo", label: "Research" },
   { href: "/demo", label: "Interactive demo" },
-  { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;

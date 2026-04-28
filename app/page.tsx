@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AgentIdPoc } from "@/components/poc/AgentIdPoc";
 import { AgentStoryCarousel } from "@/components/home/AgentStoryCarousel";
+import { LatestResearch } from "@/components/home/LatestResearch";
 import { siteConfig } from "@/lib/site";
 
 /** Matches `Nav` (`max-w-4xl` + `px-4 sm:px-6`) so hero and PoC share one left edge. */
@@ -51,6 +52,9 @@ export default function HomePage() {
 
       {/* ── Three-card story: arrival, verification, decision ──────── */}
       <AgentStoryCarousel />
+
+      {/* ── Latest research: Memo + upcoming outputs ──────────────── */}
+      <LatestResearch />
 
       {/* ── Interactive PoC ────────────────────────────────────────── */}
       <section className="border-b border-slate-200/80 bg-slate-50/50">
