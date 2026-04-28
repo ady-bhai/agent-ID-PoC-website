@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { AgentIdPoc } from "@/components/poc/AgentIdPoc";
-import { AgentNarrativeSection } from "@/components/home/AgentNarrativeSection";
-import { AgentIdAnswerSection } from "@/components/home/AgentIdAnswerSection";
+import { AgentStoryCarousel } from "@/components/home/AgentStoryCarousel";
 import { siteConfig } from "@/lib/site";
 
 /** Matches `Nav` (`max-w-4xl` + `px-4 sm:px-6`) so hero and PoC share one left edge. */
@@ -50,11 +49,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Scroll-pinned narrative: the problem, no solution ──────── */}
-      <AgentNarrativeSection />
-
-      {/* ── Agent IDs answer the questions the service couldn't ───── */}
-      <AgentIdAnswerSection />
+      {/* ── Three-card story: arrival, verification, decision ──────── */}
+      <AgentStoryCarousel />
 
       {/* ── Interactive PoC ────────────────────────────────────────── */}
       <section className="border-b border-slate-200/80 bg-slate-50/50">
