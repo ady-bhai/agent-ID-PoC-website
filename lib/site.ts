@@ -1,4 +1,12 @@
 /** Site-wide constants. Override with env on Vercel when the repo URL is final. */
+export type PartnerLogo = {
+  name: string;
+  shortName: string;
+  image: string;
+  /** Omit until the partner URL is confirmed. */
+  href?: string;
+};
+
 export const siteConfig = {
   name: "Agent IDs",
   title: "Agent IDs",
@@ -12,15 +20,13 @@ export const siteConfig = {
   tagline:
     "An open research community designing verifiable identity infrastructure for AI agents.",
   /**
-   * Slightly longer description used in metadata + the /about page. Keeps
-   * the SASH framing as steward (not owner) of the work.
+   * Slightly longer description used in metadata + the /about page.
    */
   description:
-    "An open research community designing verifiable identity infrastructure for AI agents — stewarded by Singapore AI Safety Hub (SASH).",
+    "An open research community designing verifiable identity infrastructure for AI agents — an initiative by Singapore AI Safety Hub (SASH).",
   /**
-   * The institution that hosts and stewards the community. Rendered in
-   * the hero's hosted-by line and in the dedicated stewards row above
-   * the footer. As more institutions co-host, add them to this list.
+   * The institution behind the initiative. Rendered in the hero line and
+   * in the strip above the footer. As more institutions co-host, add them.
    */
   stewards: [
     {
@@ -29,6 +35,28 @@ export const siteConfig = {
       href: "https://www.aisafety.sg",
     },
   ] as const,
+  /**
+   * Partner logos in the bottom strip (replace placeholder assets in
+   * public/images/partners/ when final artwork is available).
+   */
+  partnerLogos: [
+    {
+      name: "Singapore AI Computing",
+      shortName: "Singapore AC",
+      image: "/images/partners/singapore-ac.svg",
+    },
+    {
+      name: "Singapore AI Safety Hub",
+      shortName: "SASH",
+      href: "https://www.aisafety.sg",
+      image: "/images/partners/sash.svg",
+    },
+    {
+      name: "Korea AI Computing",
+      shortName: "Korea AC",
+      image: "/images/partners/korea-ac.svg",
+    },
+  ] satisfies readonly PartnerLogo[],
   githubUrl:
     process.env.NEXT_PUBLIC_GITHUB_URL ??
     "https://github.com/ady-bhai/agent-ID-poc-SG",

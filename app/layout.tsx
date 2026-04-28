@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { PartnerLogosStrip } from "@/components/home/PartnerLogosStrip";
 import { StewardsRow } from "@/components/home/StewardsRow";
 import { siteConfig } from "@/lib/site";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <Nav />
         <main className="flex-1">{children}</main>
         <StewardsRow />
+        <PartnerLogosStrip />
         <Footer />
       </body>
     </html>

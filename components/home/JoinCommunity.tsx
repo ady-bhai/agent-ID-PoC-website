@@ -75,8 +75,8 @@ export function JoinCommunity() {
               Join the community
             </h2>
             <p className="text-base leading-relaxed text-white/70">
-              Agent IDs are too foundational a piece of infrastructure to
-              design behind closed doors. Three ways to plug in.
+              We&apos;d love to shape the future of agent IDs with you. Here are
+              three ways to contribute.
             </p>
           </div>
           <Link

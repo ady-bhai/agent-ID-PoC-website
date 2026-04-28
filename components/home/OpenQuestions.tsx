@@ -29,6 +29,8 @@ type OpenQuestion = {
   number: number;
   /** Short heading for the question — concrete, not a topic label. */
   title: string;
+  /** Optional subtitle under the title (e.g. entity options). */
+  subtitle?: string;
   /** One-line gloss explaining why this is contested. */
   gloss: string;
   /** Where the "Weigh in" link should go. /join for now. */
@@ -38,8 +40,8 @@ type OpenQuestion = {
 const QUESTIONS: readonly OpenQuestion[] = [
   {
     number: 1,
-    title:
-      "Which entity or entities should an ID identify — agent, provider, deployer, or all three?",
+    title: "Which entity or entities should an ID identify?",
+    subtitle: "Agent, provider, deployer — or all three?",
     gloss:
       "Different services, different jurisdictions, different answers. Authentication burden scales with risk.",
     href: "/join",
@@ -49,7 +51,7 @@ const QUESTIONS: readonly OpenQuestion[] = [
     title:
       "How should IDs balance privacy with transparency and accountability?",
     gloss:
-      "Selective disclosure, pseudonymity, and verifiable credentials all trade differently — there is no neutral default.",
+      "Selective disclosure, pseudonymity, and verifiable credentials all trade differently.",
     href: "/join",
   },
   {
@@ -61,7 +63,7 @@ const QUESTIONS: readonly OpenQuestion[] = [
   },
   {
     number: 10,
-    title: "Voluntary adoption or mandated compliance — and where?",
+    title: "Voluntary adoption or mandated compliance, and where?",
     gloss:
       "Mandates close gaps faster but risk capture; voluntary regimes need a credible adoption story.",
     href: "/join",
@@ -119,6 +121,11 @@ export function OpenQuestions() {
                     <h3 className="text-base font-semibold leading-snug text-[#1a2744] sm:text-lg">
                       {q.title}
                     </h3>
+                    {q.subtitle ? (
+                      <p className="text-sm font-medium text-slate-500">
+                        {q.subtitle}
+                      </p>
+                    ) : null}
                     <p className="text-sm leading-relaxed text-slate-600">
                       {q.gloss}
                     </p>

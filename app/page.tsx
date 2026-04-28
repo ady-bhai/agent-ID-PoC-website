@@ -61,9 +61,9 @@ export default function HomePage() {
             </a>
           </div>
 
-          {/* Hosted-by line — quiet, italic, sets the steward framing. */}
+          {/* Initiative line — quiet, sets institutional framing. */}
           <p className="mt-9 text-xs text-zinc-500">
-            Stewarded by{" "}
+            An initiative by{" "}
             <a
               href={PRIMARY_STEWARD.href}
               target="_blank"

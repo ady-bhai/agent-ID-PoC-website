@@ -50,25 +50,25 @@ type Slide = {
   caption: string;
 };
 
-/**
- * Slide content. Captions are TODO placeholders — replace with the
- * final copy in this array; they'll appear under each card verbatim.
- */
+/** Slide content; captions appear under the active card. */
 const SLIDES: readonly Slide[] = [
   {
     src: "/images/home/carousel-1.jpg",
-    alt: "An AI agent stands before a closed bank, which has a thought bubble of three unanswered questions.",
-    caption: "TODO: caption for slide 1",
+    alt: "An agent arrives at a bank API service; the bank is unsure whether the agent is trustworthy.",
+    caption:
+      "An agent arrives at a service: a bank API. The bank API isn't sure whether the Agent is trustworthy.",
   },
   {
     src: "/images/home/carousel-2.jpg",
-    alt: "The agent presents an Agent ID credential to the bank; the thought bubble's three questions now show check marks.",
-    caption: "TODO: caption for slide 2",
+    alt: "The Agent presents its Agent ID to the bank API; the service's questions are answered.",
+    caption:
+      "The Agent presents its ID, answering the Bank API's questions",
   },
   {
     src: "/images/home/carousel-3.jpg",
-    alt: "Diptych: a verified agent is admitted through open doors on the left, while a rogue red agent is stopped at closed doors on the right.",
-    caption: "TODO: caption for slide 3",
+    alt: "Agents with IDs are allowed through; agents without IDs are denied access.",
+    caption:
+      "Agents with IDs are allowed access to services while Agents without are denied access",
   },
 ];
 
@@ -168,6 +168,7 @@ export function AgentStoryCarousel() {
           display: "flex",
           flexDirection: "column",
           gap: "clamp(20px, 3vw, 32px)",
+          alignItems: "center",
         }}
       >
         {/* ── Section header (eyebrow + heading + lede) ─────────────── */}
@@ -177,6 +178,7 @@ export function AgentStoryCarousel() {
             flexDirection: "column",
             gap: 10,
             maxWidth: 640,
+            alignSelf: "stretch",
           }}
         >
           <p
@@ -211,9 +213,8 @@ export function AgentStoryCarousel() {
               color: PALETTE.slate800,
             }}
           >
-            Services meeting an AI agent for the first time can&apos;t answer
-            three basic questions. An agent ID is how those answers get
-            carried in.
+            An agent ID is how those answers get carried in. Agent IDs help
+            services answer questions to make them feel confident.
           </p>
         </header>
         {/* ── Card viewport (clips the track) ───────────────────────── */}
@@ -221,6 +222,7 @@ export function AgentStoryCarousel() {
           style={{
             position: "relative",
             width: "100%",
+            maxWidth: "min(100%, 840px)",
             aspectRatio: "16 / 9",
             overflow: "hidden",
             borderRadius: 12,
@@ -270,6 +272,7 @@ export function AgentStoryCarousel() {
           style={{
             margin: 0,
             minHeight: "2.5em",
+            maxWidth: "min(100%, 840px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -291,6 +294,8 @@ export function AgentStoryCarousel() {
             alignItems: "center",
             justifyContent: "space-between",
             gap: 16,
+            width: "100%",
+            maxWidth: "min(100%, 840px)",
           }}
         >
           <ArrowButton

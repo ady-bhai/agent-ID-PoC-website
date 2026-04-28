@@ -41,10 +41,10 @@ export default function JoinPage() {
             Join the community
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-700">
-            Agent IDs are too foundational a piece of infrastructure to design
-            behind closed doors. Whoever you are — a researcher, a regulator,
-            a deployer, a service provider, a curious student — there&rsquo;s
-            a way to plug in.
+            We&apos;d love to shape the future of agent IDs with you. Here are
+            three ways to contribute. Whoever you are — a researcher, a
+            regulator, a deployer, a service provider, a curious student —
+            there&rsquo;s a way to plug in.
           </p>
         </div>
       </section>

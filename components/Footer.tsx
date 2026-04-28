@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/site";
  * Three-column layout:
  *   - About: project name + one-line description.
  *   - Community: navigational links (memo, demo, join, repo).
- *   - Stewards / legal: who runs it + the year.
+ *   - Initiative / legal: who runs it + the year.
  *
  * Width matches the new homepage wide sections (`max-w-6xl`) so the
  * footer doesn't read as narrower than the page above it.
@@ -72,10 +72,10 @@ export function Footer() {
             </ul>
           </nav>
 
-          {/* ── Stewards / legal ─────────────────────────────────── */}
+          {/* ── Initiative / legal ─────────────────────────────────── */}
           <div className="flex flex-col gap-3">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
-              Stewarded by
+              An initiative by
             </p>
             <ul className="flex list-none flex-col gap-2">
               {siteConfig.stewards.map((s) => (
