@@ -352,14 +352,7 @@ export function ProjectTimeline() {
                     className="mb-3 ml-0 mt-1 rounded-md border border-[rgba(26,26,26,0.12)] bg-white p-4 shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
                     style={{ borderLeft: "3px solid #1A2744" }}
                   >
-                    <p
-                      className="m-0 text-[15px] leading-relaxed text-[#1F2937]"
-                      style={{
-                        fontFamily:
-                          "ui-serif, Georgia, 'Times New Roman', serif",
-                        fontStyle: "italic",
-                      }}
-                    >
+                    <p className="m-0 text-[15px] leading-relaxed text-[#1F2937]">
                       {m.description}
                     </p>
                   </div>
@@ -513,13 +506,7 @@ function ExpansionPanel({
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6B6B6B]">
               {activeMilestone.dateLabel} · {activeMilestone.title}
             </p>
-            <p
-              className="m-0 text-base leading-relaxed text-[#1F2937] sm:text-lg"
-              style={{
-                fontFamily: "ui-serif, Georgia, 'Times New Roman', serif",
-                fontStyle: "italic",
-              }}
-            >
+            <p className="m-0 text-base leading-relaxed text-[#1F2937] sm:text-lg">
               {activeMilestone.description}
             </p>
           </div>

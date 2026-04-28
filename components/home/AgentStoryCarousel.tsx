@@ -246,8 +246,6 @@ export function AgentStoryCarousel() {
             style={{
               margin: 0,
               minHeight: "4.5em",
-              fontFamily: "ui-serif, Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
               fontSize: "clamp(17px, 2.1vw, 22px)",
               lineHeight: 1.45,
               color: PALETTE.slate800,
