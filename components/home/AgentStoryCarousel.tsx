@@ -3,7 +3,9 @@
 import Image from "next/image";
 import {
   useCallback,
+  useEffect,
   useId,
+  useRef,
   useState,
   useSyncExternalStore,
   type CSSProperties,
@@ -14,23 +16,9 @@ import { withPublicBasePath } from "@/lib/paths";
 /**
  * AgentStoryCarousel
  * ──────────────────
- * Three-card horizontal carousel for the home page. Replaces the older
- * scroll-pinned `AgentNarrativeSection` + the static `AgentIdAnswerSection`
- * with a single, manually-driven story:
- *
- *   1. arrival      — the agent shows up; the service has questions
- *   2. verification — the Agent ID supplies the answers
- *   3. decision     — verified agents pass; unverified ones are stopped
- *
- * Manual interaction only: arrow buttons, numbered tabs, and keyboard
- * arrow keys. No auto-advance, no swipe, no looping. Swipe would be
- * roughly ten lines of touch-event handling on the viewport ref if you
- * decide to add it later.
- *
- * The slide track holds all three images and translates as one unit;
- * only the active slide is visible because the viewport clips. This
- * keeps non-active images mounted (so transitions never reflow images)
- * but `aria-hidden` keeps screen readers focused on just the active one.
+ * Two-column layout (md+): left = problem copy + per-slide caption that
+ * fades when the step changes; right = image carousel with prev/next
+ * flanking the frame and numbered tabs below. Stacks on small screens.
  */
 
 const PALETTE = {
@@ -44,13 +32,15 @@ const PALETTE = {
   slate800: "#1F2937",
 } as const;
 
+const CAPTION_FADE_MS = 240;
+
 type Slide = {
   src: string;
   alt: string;
   caption: string;
 };
 
-/** Slide content; captions appear under the active card. */
+/** Slide content; captions render in the left column for the active step. */
 const SLIDES: readonly Slide[] = [
   {
     src: "/images/home/carousel-1.jpg",
@@ -72,15 +62,6 @@ const SLIDES: readonly Slide[] = [
   },
 ];
 
-// ─── Hooks ───────────────────────────────────────────────────────────────────
-
-/**
- * Tracks `prefers-reduced-motion` via `useSyncExternalStore` rather than
- * an effect-and-state pair, which keeps the hook lint-clean (no synchronous
- * setState inside an effect) and yields the correct value on first render.
- * Server snapshot returns `false` — assume motion is enabled until the
- * client confirms otherwise.
- */
 function useReducedMotion(): boolean {
   return useSyncExternalStore(
     subscribePrefersReducedMotion,
@@ -105,11 +86,60 @@ function getPrefersReducedMotionServer(): boolean {
   return false;
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+/**
+ * Drives caption text + opacity so copy cross-fades when `activeIndex` changes.
+ * Skips animation on first paint and when prefers-reduced-motion is set.
+ */
+function useCaptionFade(activeIndex: number, reducedMotion: boolean) {
+  const [captionIndex, setCaptionIndex] = useState(activeIndex);
+  const [opacity, setOpacity] = useState(1);
+  const isFirstPaint = useRef(true);
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setCaptionIndex(activeIndex);
+      setOpacity(1);
+      return;
+    }
+
+    if (isFirstPaint.current) {
+      isFirstPaint.current = false;
+      setCaptionIndex(activeIndex);
+      setOpacity(1);
+      return;
+    }
+
+    if (captionIndex === activeIndex) {
+      setOpacity(1);
+      return;
+    }
+
+    let cancelled = false;
+    setOpacity(0);
+    const id = window.setTimeout(() => {
+      if (cancelled) return;
+      setCaptionIndex(activeIndex);
+      requestAnimationFrame(() => {
+        if (!cancelled) setOpacity(1);
+      });
+    }, CAPTION_FADE_MS);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(id);
+    };
+  }, [activeIndex, reducedMotion, captionIndex]);
+
+  return { captionIndex, opacity };
+}
 
 export function AgentStoryCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
   const reduced = useReducedMotion();
+  const { captionIndex, opacity: captionOpacity } = useCaptionFade(
+    activeIndex,
+    reduced,
+  );
   const sectionId = useId();
   const slideIdPrefix = `${sectionId}-slide`;
 
@@ -135,9 +165,6 @@ export function AgentStoryCarousel() {
     }
   };
 
-  // Track is `total * 100%` wide; each slide takes `100/total` of the track
-  // (which equals 100% of the viewport). Translating by `-activeIndex *
-  // (100 / total)` of the track shifts exactly one viewport-width per step.
   const trackStyle: CSSProperties = {
     display: "flex",
     width: `${total * 100}%`,
@@ -148,11 +175,17 @@ export function AgentStoryCarousel() {
       : "transform 400ms cubic-bezier(0.4, 0, 0.2, 1)",
   };
 
+  const captionTransition = reduced
+    ? "none"
+    : `opacity ${CAPTION_FADE_MS}ms ease, transform ${CAPTION_FADE_MS}ms ease`;
+
   return (
     <section
+      tabIndex={0}
       aria-roledescription="carousel"
       aria-label="How an Agent ID changes a service interaction"
       onKeyDown={onKeyDown}
+      className="outline-none focus-visible:ring-2 focus-visible:ring-[#1a2744] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F0E8]"
       style={{
         background: PALETTE.bg,
         color: PALETTE.ink,
@@ -161,152 +194,140 @@ export function AgentStoryCarousel() {
         padding: "clamp(40px, 7vw, 72px) clamp(16px, 5vw, 48px)",
       }}
     >
-      <div
-        style={{
-          maxWidth: 960,
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: "clamp(20px, 3vw, 32px)",
-          alignItems: "center",
-        }}
-      >
-        {/* ── Section header (eyebrow + heading + lede) ─────────────── */}
-        <header
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-            maxWidth: 640,
-            alignSelf: "stretch",
-          }}
-        >
-          <p
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] md:items-start md:gap-10 lg:gap-12">
+        {/* ── Left: problem copy + fading step caption ─────────────── */}
+        <div className="flex min-w-0 flex-col gap-6">
+          <header
             style={{
-              margin: 0,
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: PALETTE.inkDim,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
             }}
           >
-            The problem
-          </p>
-          <h2
-            style={{
-              margin: 0,
-              fontSize: "clamp(24px, 3.4vw, 34px)",
-              fontWeight: 600,
-              letterSpacing: "-0.01em",
-              lineHeight: 1.15,
-              color: PALETTE.navy,
-            }}
-          >
-            Why agent IDs?
-          </h2>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: PALETTE.inkDim,
+              }}
+            >
+              The problem
+            </p>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "clamp(24px, 3.4vw, 34px)",
+                fontWeight: 600,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.15,
+                color: PALETTE.navy,
+              }}
+            >
+              Why agent IDs?
+            </h2>
+            <p
+              style={{
+                margin: 0,
+                fontSize: "clamp(15px, 1.7vw, 17px)",
+                lineHeight: 1.55,
+                color: PALETTE.slate800,
+              }}
+            >
+              An agent ID is how those answers get carried in. Agent IDs help
+              services answer questions to make them feel confident.
+            </p>
+          </header>
+
           <p
+            aria-live="polite"
             style={{
               margin: 0,
-              fontSize: "clamp(15px, 1.7vw, 17px)",
-              lineHeight: 1.55,
+              minHeight: "4.5em",
+              fontFamily: "ui-serif, Georgia, 'Times New Roman', serif",
+              fontStyle: "italic",
+              fontSize: "clamp(17px, 2.1vw, 22px)",
+              lineHeight: 1.45,
               color: PALETTE.slate800,
+              textAlign: "left",
+              opacity: captionOpacity,
+              transform:
+                reduced || captionOpacity === 1
+                  ? "translateY(0)"
+                  : "translateY(4px)",
+              transition: captionTransition,
             }}
           >
-            An agent ID is how those answers get carried in. Agent IDs help
-            services answer questions to make them feel confident.
+            {SLIDES[captionIndex]?.caption}
           </p>
-        </header>
-        {/* ── Card viewport (clips the track) ───────────────────────── */}
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            maxWidth: "min(100%, 840px)",
-            aspectRatio: "16 / 9",
-            overflow: "hidden",
-            borderRadius: 12,
-            background: PALETTE.bg,
-            boxShadow: "0 24px 60px -12px rgba(26, 39, 68, 0.18)",
-          }}
-        >
-          <div style={trackStyle}>
-            {SLIDES.map((slide, i) => {
-              const isActive = i === activeIndex;
-              return (
-                <div
-                  key={slide.src}
-                  id={`${slideIdPrefix}-${i}`}
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-label={`Slide ${i + 1} of ${total}`}
-                  aria-hidden={!isActive}
-                  style={{
-                    flex: `0 0 ${100 / total}%`,
-                    position: "relative",
-                    height: "100%",
-                  }}
-                >
-                  <Image
-                    src={withPublicBasePath(slide.src)}
-                    alt={slide.alt}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 960px"
-                    style={{ objectFit: "contain" }}
-                    priority={i === 0}
-                  />
-                </div>
-              );
-            })}
-          </div>
         </div>
 
-        {/*
-          Caption for the active slide. `aria-live="polite"` so screen
-          readers announce the new line when the reader steps through.
-          A reserved `min-height` keeps multi-line captions from jolting
-          the controls below.
-        */}
-        <p
-          aria-live="polite"
-          style={{
-            margin: 0,
-            minHeight: "2.5em",
-            maxWidth: "min(100%, 840px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontFamily: "ui-serif, Georgia, 'Times New Roman', serif",
-            fontStyle: "italic",
-            fontSize: "clamp(18px, 2.4vw, 24px)",
-            lineHeight: 1.4,
-            color: PALETTE.slate800,
-            textAlign: "center",
-          }}
-        >
-          {SLIDES[activeIndex]?.caption}
-        </p>
-
-        {/* ── Footer: prev arrow | numbered tabs | next arrow ───────── */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 16,
-            width: "100%",
-            maxWidth: "min(100%, 840px)",
-          }}
-        >
-          <ArrowButton
-            direction="prev"
-            disabled={!canPrev}
-            onClick={() => goTo(activeIndex - 1)}
-          />
+        {/* ── Right: arrows + viewport, tabs below ──────────────────── */}
+        <div className="flex min-w-0 flex-col gap-4">
           <div
+            className="flex w-full items-center gap-2 sm:gap-3"
+            style={{ minWidth: 0 }}
+          >
+            <ArrowButton
+              direction="prev"
+              disabled={!canPrev}
+              onClick={() => goTo(activeIndex - 1)}
+            />
+            <div
+              style={{
+                position: "relative",
+                flex: "1 1 0",
+                minWidth: 0,
+                aspectRatio: "16 / 9",
+                overflow: "hidden",
+                borderRadius: 12,
+                background: PALETTE.bg,
+                boxShadow: "0 24px 60px -12px rgba(26, 39, 68, 0.18)",
+              }}
+            >
+              <div style={trackStyle}>
+                {SLIDES.map((slide, i) => {
+                  const isActive = i === activeIndex;
+                  return (
+                    <div
+                      key={slide.src}
+                      id={`${slideIdPrefix}-${i}`}
+                      role="group"
+                      aria-roledescription="slide"
+                      aria-label={`Slide ${i + 1} of ${total}`}
+                      aria-hidden={!isActive}
+                      style={{
+                        flex: `0 0 ${100 / total}%`,
+                        position: "relative",
+                        height: "100%",
+                      }}
+                    >
+                      <Image
+                        src={withPublicBasePath(slide.src)}
+                        alt={slide.alt}
+                        fill
+                        sizes="(max-width: 768px) 90vw, 50vw"
+                        style={{ objectFit: "contain" }}
+                        priority={i === 0}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <ArrowButton
+              direction="next"
+              disabled={!canNext}
+              onClick={() => goTo(activeIndex + 1)}
+            />
+          </div>
+
+          <div
+            className="flex justify-center gap-2"
             role="tablist"
             aria-label="Story step"
-            style={{ display: "flex", gap: 8 }}
           >
             {SLIDES.map((_, i) => {
               const isActive = i === activeIndex;
@@ -342,18 +363,11 @@ export function AgentStoryCarousel() {
               );
             })}
           </div>
-          <ArrowButton
-            direction="next"
-            disabled={!canNext}
-            onClick={() => goTo(activeIndex + 1)}
-          />
         </div>
       </div>
     </section>
   );
 }
-
-// ─── Arrow button ────────────────────────────────────────────────────────────
 
 function ArrowButton({
   direction,
