@@ -56,17 +56,17 @@ type Slide = {
  */
 const SLIDES: readonly Slide[] = [
   {
-    src: "/images/home/carousel-1.png",
+    src: "/images/home/carousel-1.jpg",
     alt: "An AI agent stands before a closed bank, which has a thought bubble of three unanswered questions.",
     caption: "TODO: caption for slide 1",
   },
   {
-    src: "/images/home/carousel-2.png",
+    src: "/images/home/carousel-2.jpg",
     alt: "The agent presents an Agent ID credential to the bank; the thought bubble's three questions now show check marks.",
     caption: "TODO: caption for slide 2",
   },
   {
-    src: "/images/home/carousel-3.png",
+    src: "/images/home/carousel-3.jpg",
     alt: "Diptych: a verified agent is admitted through open doors on the left, while a rogue red agent is stopped at closed doors on the right.",
     caption: "TODO: caption for slide 3",
   },
