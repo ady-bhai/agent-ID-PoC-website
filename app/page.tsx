@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { AgentIdPoc } from "@/components/poc/AgentIdPoc";
 import { AgentStoryCarousel } from "@/components/home/AgentStoryCarousel";
 import { LatestResearch } from "@/components/home/LatestResearch";
 import { Workstreams } from "@/components/home/Workstreams";
 import { OpenQuestions } from "@/components/home/OpenQuestions";
 import { JoinCommunity } from "@/components/home/JoinCommunity";
-import { FigureSwitcher } from "@/components/FigureSwitcher";
-import { HomeFigure } from "@/components/HomeFigure";
+import { PocViewSwitcher } from "@/components/poc/PocViewSwitcher";
 import { siteConfig } from "@/lib/site";
 import { homeContent, homeWide } from "@/lib/layout";
 
@@ -100,48 +98,7 @@ export default function HomePage() {
             className="mt-3 h-px max-w-md bg-gradient-to-r from-[#ea580c] via-[#ea580c]/50 to-transparent"
             aria-hidden
           />
-          <FigureSwitcher
-            className="mt-8"
-            syncHash
-            defaultId="poc"
-            ariaLabel="Proof of concept figures"
-            items={[
-              {
-                id: "poc",
-                label: "Interactive PoC",
-                subtitle: "Click to explore the credential",
-                content: <AgentIdPoc variant="full" />,
-              },
-              {
-                id: "standards",
-                label: "Standards landscape",
-                subtitle: "Where each layer fits",
-                content: (
-                  <HomeFigure
-                    src="/images/figures/standards-matrix.png"
-                    width={1206}
-                    height={686}
-                    alt="Matrix comparing common standards against service questions such as provider behind the agent, deployer, capabilities, safety evidence, and incident recourse. Composite Agent ID rows show direct answers across columns."
-                    caption="Which questions each layer helps answer — no single standard provides a complete answer on its own."
-                  />
-                ),
-              },
-              {
-                id: "packet",
-                label: "What's in the packet",
-                subtitle: "How attestations stack",
-                content: (
-                  <HomeFigure
-                    src="/images/figures/service-request-card.png"
-                    width={1706}
-                    height={858}
-                    alt="Diagram of a service request card packet: stacked signed blocks for provider identity, model version, incident response endpoint, deployer identity and capabilities, independent safety assurance, and instance-level fields, with brackets noting independent signers and cryptographic binding."
-                    caption="How attestations stack and bind so a valid provider signature cannot be reused with an unauthorized deployer."
-                  />
-                ),
-              },
-            ]}
-          />
+          <PocViewSwitcher className="mt-8" />
         </div>
       </section>
 

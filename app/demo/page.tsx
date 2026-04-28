@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DemoPocSwitcher } from "@/components/demo/DemoPocSwitcher";
+import { PocViewSwitcher } from "@/components/poc/PocViewSwitcher";
 
 export const metadata: Metadata = {
   title: "Interactive demo",
@@ -15,7 +15,7 @@ export default function DemoPage() {
         </h1>
       </div>
 
-      <DemoPocSwitcher />
+      <PocViewSwitcher />
 
       <div className="mx-auto mt-10 max-w-3xl rounded-lg border border-slate-200 bg-slate-50/80 px-4 py-5 text-sm leading-relaxed text-slate-700 sm:px-5">
         <h2 className="font-semibold text-[#1a2744]">Scenario & presets</h2>

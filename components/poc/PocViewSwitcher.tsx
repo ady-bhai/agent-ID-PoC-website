@@ -25,19 +25,21 @@ const ITEMS: ReadonlyArray<{ id: AgentIdPocView; label: string; subtitle: string
 const isView = (id: string): id is AgentIdPocView =>
   id === "ecosystem" || id === "credential" || id === "consequences";
 
+export type PocViewSwitcherProps = {
+  /** Extra classes on the FigureSwitcher wrapper (typically top margin). */
+  className?: string;
+};
+
 /**
- * Drives the /demo left rail and a single shared <AgentIdPoc/> instance.
- *
- * Controlled FigureSwitcher state lives here so the same PoC mount serves
- * all three rail entries — preset and field-toggle state persists across
- * rail clicks, matching the PoC's "one shared state, three lenses" copy.
+ * Left rail + one shared `<AgentIdPoc/>` tuned for Ecosystem / Credential /
+ * Consequences. Used on `/demo` and the homepage "See it working" section.
  */
-export function DemoPocSwitcher() {
+export function PocViewSwitcher({ className = "mt-8" }: PocViewSwitcherProps) {
   const [view, setView] = useState<AgentIdPocView>("ecosystem");
 
   return (
     <FigureSwitcher
-      className="mt-8"
+      className={className}
       syncHash
       ariaLabel="Proof of concept views"
       value={view}
